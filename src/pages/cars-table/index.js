@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useMemo, useState } from "react"
 
 import { graphql } from "gatsby"
 
@@ -21,7 +21,7 @@ import clsx from "clsx"
 
 import { formatPrice, formatRange } from "../../utils"
 
-import CarsTable from "./cars-table"
+import CarsTable from "./_CarsTable"
 
 const drawerWidth = 240
 
@@ -83,9 +83,6 @@ function CarsTablePage({ data, container }) {
   const [minRangeMi, setMinRangeMi] = useState(0)
   const [maxPriceUsd, setMaxPriceUsd] = useState(0)
   const [minSeats, setMinSeats] = useState(0)
-
-  const [filteredRows, setFilteredRows] = useState([])
-
   const MIN_RANGE_LIMIT = 500
   const MIN_RANGE_STEP = 10
   const MAX_PRICE_LIMIT = 100000
@@ -94,17 +91,16 @@ function CarsTablePage({ data, container }) {
   const MIN_SEATS_LIMIT = 6
 
   const rows = data.allAirtable.edges.map(edge => edge.node.data)
-
-  useEffect(() => {
-    setFilteredRows(
+  const filteredRows = useMemo(
+    () =>
       rows.filter(row => {
         if (row.rangeMi < minRangeMi) return false
         if (maxPriceUsd !== 0 && row.priceUsd > maxPriceUsd) return false
         if (row.seats < minSeats) return false
         return true
-      })
-    )
-  }, [minRangeMi, maxPriceUsd, minSeats])
+      }),
+    [minRangeMi, maxPriceUsd, minSeats, rows]
+  )
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
