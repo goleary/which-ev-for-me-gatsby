@@ -193,7 +193,6 @@ export default function CarsTable({ rows }) {
                         component="th"
                         id={labelId}
                         scope="row"
-                        padding="none"
                       >
                         {row.brand}
                       </TableCell>

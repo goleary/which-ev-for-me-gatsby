@@ -3,21 +3,21 @@ import React, { useMemo, useState } from "react"
 import { graphql } from "gatsby"
 
 import PropTypes from "prop-types"
-import AppBar from "@material-ui/core/AppBar"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import Divider from "@material-ui/core/Divider"
-import Drawer from "@material-ui/core/Drawer"
-import Hidden from "@material-ui/core/Hidden"
-import IconButton from "@material-ui/core/IconButton"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
-import MenuIcon from "@material-ui/icons/Menu"
-import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import Slider from "@material-ui/core/Slider"
 import { makeStyles, useTheme } from "@material-ui/core/styles"
 
+import AirlineSeatReclineNormalIcon from "@material-ui/icons/AirlineSeatReclineNormal"
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney"
+import SpeedIcon from "@material-ui/icons/Speed"
+
 import clsx from "clsx"
+
+import Layout from "../../components/layout"
 
 import { formatPrice, formatRange } from "../../utils"
 
@@ -54,7 +54,6 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    paddingTop: "80px",
   },
   filterItem: {
     padding: theme.spacing(1),
@@ -66,9 +65,14 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    "& p":{
+      paddingLeft: '4px'
+    }
   },
   filterValue: {
     fontWeight: "bold",
+    flexGrow: 1,
+    textAlign: "right",
   },
   inactive: {
     color: "darkgray",
@@ -76,7 +80,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function CarsTablePage({ data, container }) {
+function CarsTablePage({ data }) {
   const classes = useStyles()
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
@@ -115,8 +119,9 @@ function CarsTablePage({ data, container }) {
       <List>
         <ListItem className={classes.filterItem}>
           <div className={classes.filterHeader}>
+            <SpeedIcon />
             <Typography id="min-range-slider" gutterBottom>
-              Min Range (mi)
+              Min Range
             </Typography>
             <Typography className={classes.filterValue} gutterBottom>
               {formatRange(minRangeMi)}
@@ -132,6 +137,7 @@ function CarsTablePage({ data, container }) {
         </ListItem>
         <ListItem className={classes.filterItem}>
           <div className={classes.filterHeader}>
+            <AttachMoneyIcon />
             <Typography id="max-price-slider" gutterBottom>
               Max Price
             </Typography>
@@ -155,6 +161,7 @@ function CarsTablePage({ data, container }) {
         </ListItem>
         <ListItem className={classes.filterItem}>
           <div className={classes.filterHeader}>
+            <AirlineSeatReclineNormalIcon />
             <Typography id="min-range-slider" gutterBottom>
               Min Seats
             </Typography>
@@ -174,68 +181,18 @@ function CarsTablePage({ data, container }) {
   )
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Which EV for Me?
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <nav className={classes.drawer} aria-label="mailbox folders">
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden smUp implementation="css">
-          <Drawer
-            container={container}
-            variant="temporary"
-            anchor={theme.direction === "rtl" ? "right" : "left"}
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Drawer
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            variant="permanent"
-            open
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-      </nav>
-      <main className={classes.content}>
-        <CarsTable rows={filteredRows} />
-      </main>
-    </div>
+    <Layout drawer={drawer}>
+      <div className={classes.root}>
+        <CssBaseline />
+        <main className={classes.content}>
+          <CarsTable rows={filteredRows} />
+        </main>
+      </div>
+    </Layout>
   )
 }
 
 CarsTablePage.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  container: PropTypes.any,
   data: PropTypes.any,
 }
 
