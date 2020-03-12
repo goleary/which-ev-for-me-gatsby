@@ -22,6 +22,7 @@ import Layout from "../../components/layout"
 import { formatPrice, formatRange } from "../../utils"
 
 import CarsTable from "./_CarsTable"
+import withLocation from "../../hocs/withLocation"
 
 const drawerWidth = 240
 
@@ -65,9 +66,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    "& p":{
-      paddingLeft: '4px'
-    }
+    "& p": {
+      paddingLeft: "4px",
+    },
   },
   filterValue: {
     fontWeight: "bold",
@@ -80,18 +81,18 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function CarsTablePage({ data }) {
+function CarsTablePage({ data, search }) {
+  console.log("search:", JSON.stringify(search))
   const classes = useStyles()
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
-  const [minRangeMi, setMinRangeMi] = useState(0)
-  const [maxPriceUsd, setMaxPriceUsd] = useState(0)
-  const [minSeats, setMinSeats] = useState(0)
+  const [minRangeMi, setMinRangeMi] = useState(parseInt(search.minRange) | 0)
+  const [maxPriceUsd, setMaxPriceUsd] = useState(parseInt(search.maxPrice) | 0)
+  const [minSeats, setMinSeats] = useState(parseInt(search.minSeats) | 0)
   const MIN_RANGE_LIMIT = 500
   const MIN_RANGE_STEP = 10
   const MAX_PRICE_LIMIT = 100000
   const MAX_PRICE_STEP = 5000
-
   const MIN_SEATS_LIMIT = 6
 
   const rows = data.allAirtable.edges.map(edge => edge.node.data)
@@ -196,7 +197,7 @@ CarsTablePage.propTypes = {
   data: PropTypes.any,
 }
 
-export default CarsTablePage
+export default withLocation(CarsTablePage)
 
 export const query = graphql`
   {
